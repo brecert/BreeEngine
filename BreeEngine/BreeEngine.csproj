@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <LegalLicense>AGPL-3.0-or-later</LegalLicense>
+        <LegalAuthor>Bree</LegalAuthor>
+        <LegalEmail>me@bree.dev</LegalEmail>
+        <UseSPDXFileHeaders>true</UseSPDXFileHeaders>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <ResoniteProjectType>plugin</ResoniteProjectType>
+        <ResoniteTarget>client</ResoniteTarget>
+        <ResoniteInstallOnBuild>false</ResoniteInstallOnBuild>
+        <ResonitePath>D:\Program Files (x86)\Steam\steamapps\common\Resonite\</ResonitePath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ResoniteReference Include="FrooxEngine" />
+        <ResoniteReference Include="ProtoFlux.Core" />
+        <ResoniteReference Include="ProtoFluxBindings" />
+        <ResoniteReference Include="Elements.Core" />
+        <!-- <ResoniteReference Include="System.ValueTuple" /> -->
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- <PackageReference Include="Lib.Harmony" Version="2.3.3" /> -->
+        <PackageReference Include="StrictEmit" Version="2.9.0" />
+        <ProjectReference Include="../SourceGenerators/SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <_ResoniteAssemblyPath>$(ResonitePath)/Resonite_Data/Managed</_ResoniteAssemblyPath>
+        <_ResoniteAssemblyPath Condition="'$(ResoniteTarget)' == 'headless'">$(ResonitePath)</_ResoniteAssemblyPath>
+        <ReferencePath>$(_ResoniteAssemblyPath);$(ReferencePath)</ReferencePath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="@(ResoniteReference)">
+            <Name>%(ResoniteReference.Identity)</Name>
+            <HintPath Condition="'%(HintPath)' == '' And Exists('$(_ResoniteAssemblyPath)/%(Identity).dll')">$(_ResoniteAssemblyPath)/%(Identity).dll</HintPath>
+            <HintPath Condition="'%(HintPath)' == '' And Exists('$(_ResoniteAssemblyPath)/%(Identity).exe')">$(_ResoniteAssemblyPath)/%(Identity).exe</HintPath>
+        </Reference>
+    </ItemGroup>
+
+</Project>
