@@ -33,17 +33,21 @@ public class UnackValueTupleGenerator : ISourceGenerator
     using FrooxEngine.ProtoFlux;
     using ProtoFlux.Core;
     using FrooxEngine;
+    using BreeEngine.TupleExtensions;
 
     namespace ProtoFlux.Runtimes.Execution.Nodes.Bree.Tuples.Unpack;
 
     [NodeCategory("Tuples/Unpack")]
     [NodeName("Unpack Tuple")]
+    [NodeOverload("Core.Operators.UnpackTuple{{size}}")]
     [GenericTypes(GenericTypesAttribute.Group.EnginePrimitives)]
     public class UnpackValueTuple<{{types}}> : VoidNode<FrooxEngineContext> {{string.Join(" ", Range(0, size).Select(n => $"where T{n} : unmanaged"))}}
     {
       public ValueInput<ValueTuple<{{types}}>> Tuple;
 
       {{string.Join("\n", Range(0, size).Select(n => $"public readonly ValueOutput<T{n}> Value{n};"))}}
+
+      public static bool IsValidGenericType => TupleHelper.IsValidTupleType(typeof(ValueTuple<{{types}}>));
 
       protected override void ComputeOutputs(FrooxEngineContext context)
       {

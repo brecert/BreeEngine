@@ -33,15 +33,19 @@ public class PackValueTupleGenerator : ISourceGenerator
         using FrooxEngine.ProtoFlux;
         using ProtoFlux.Core;
         using FrooxEngine;
+        using BreeEngine.TupleExtensions;
 
         namespace ProtoFlux.Runtimes.Execution.Nodes.Bree.Tuples.Pack;
 
         [NodeCategory("Tuples/Pack")]
         [NodeName("Pack Tuple")]
+        [NodeOverload("Core.Operators.PackTuple{{size}}")]
         [GenericTypes(GenericTypesAttribute.Group.EnginePrimitives)]
         public class PackValueTuple<{{types}}> : ValueFunctionNode<FrooxEngineContext, ValueTuple<{{types}}>> {{string.Join(" ", Range(0, size).Select(n => $"where T{n} : unmanaged"))}}
         {
             {{string.Join("\n", Range(0, size).Select(n => $"public ValueInput<T{n}> Arg{n};"))}}
+
+            public static bool IsValidGenericType => TupleHelper.IsValidTupleType(typeof(ValueTuple<{{types}}>));
 
             protected override ValueTuple<{{types}}> Compute(FrooxEngineContext context)
             {
